@@ -7,30 +7,30 @@ public class Game {
 		int[] points = {0,0};//Game has just begun, nobody has any points
 		Player[] players = new Player[4];//Create the players
 		
-		System.out.println("test");
-		
 		while(gameNotOver(points)){
 			
 			Hand[] hands = generateHands(); //hands[4] contains the kitty
 			
-			dispHands(hands);
+			DisplayMethods.DispHands(hands);
 			
 			//Run the bidding
 			ArrayList<Bid> prevBids=new ArrayList<Bid>();
 			int currentBidPlayer=0; //Begin with the first player
 			
-			while(isBiddingOver(prevBids)){
+			while(!isBiddingOver(prevBids)){
 					prevBids.add(Player.getBid(hands[currentBidPlayer],points,prevBids));
+					DisplayMethods.DispBid(prevBids.get(prevBids.size()-1),currentBidPlayer);
 					currentBidPlayer=(currentBidPlayer+1)%4;
 			}
+			
 			//TODO deal with all pass
-			for(int i=0;i<prevBids.size();i++){
-				System.out.printf("Suit %d - Value %d. Player %d\n", prevBids.get(i).suit,prevBids.get(i).suit,i);
-			}
+			
 			
 			//Give the player the kitty
 			hands[currentBidPlayer]=Player.useKitty(hands[4],hands[currentBidPlayer],prevBids);
 			int leadPlayer=currentBidPlayer;
+			DisplayMethods.DispKitty(hands[currentBidPlayer]);
+			
 			//ResetTricks(players); //Set the tricksWon for each team to 0;
 			//Start playing cards/ doing tricks
 			for (int i=0;i<10;i++){
@@ -39,7 +39,7 @@ public class Game {
 					int currentPlayer=(leadPlayer+j)%4; //Player that needs to play a card
 					trickCards.add(Player.getCard(prevBids,hands[currentPlayer],trickCards));
 				}
-				int winner=trickWinner.findVictor(trickCards,prevBids.get(prevBids.size())); //TODO
+				int winner=trickWinner.findVictor(trickCards,prevBids.get(prevBids.size()-3));
 				leadPlayer=(leadPlayer+winner)%4; //Figure out who leads the next trick
 				//victor.team.tricksWon++;
 				//TODO sort out the tricks here
@@ -48,11 +48,7 @@ public class Game {
 			//AllocatePoints(players[currentBidPlayer].team);
 		}
 	}
-
-	private static void dispHands(Hand[] hands) {
-		
-	}
-
+	
 	private static Hand[] generateHands() {
 		ArrayList<Card> deck=new ArrayList<Card>();
 		for (int suit =0;suit<4;suit++){
