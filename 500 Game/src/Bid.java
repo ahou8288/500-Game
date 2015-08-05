@@ -8,6 +8,11 @@ public class Bid {
 	public int value;
 }
 
-//Special Bids
-//suit 4 reserved for no trumps
-//suit -1 reserved for pass
+//Special Bids //TODO
+//SUIT Rules
+//0 spades
+//1 clubs
+//2 diamonds
+//3 hearts
+//4 reserved for no trumps
+//-1 reserved for pass

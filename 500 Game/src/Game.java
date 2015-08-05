@@ -10,7 +10,10 @@ public class Game {
 		System.out.println("test");
 		
 		while(gameNotOver(points)){
+			
 			Hand[] hands = generateHands(); //hands[4] contains the kitty
+			
+			dispHands(hands);
 			
 			//Run the bidding
 			ArrayList<Bid> prevBids=new ArrayList<Bid>();
@@ -20,34 +23,42 @@ public class Game {
 					prevBids.add(Player.getBid(hands[currentBidPlayer],points,prevBids));
 					currentBidPlayer=(currentBidPlayer+1)%4;
 			}
-			
+			//TODO deal with all pass
 			for(int i=0;i<prevBids.size();i++){
 				System.out.printf("Suit %d - Value %d. Player %d\n", prevBids.get(i).suit,prevBids.get(i).suit,i);
 			}
 			
 			//Give the player the kitty
 			hands[currentBidPlayer]=Player.useKitty(hands[4],hands[currentBidPlayer],prevBids);
+			int leadPlayer=currentBidPlayer;
+			//ResetTricks(players); //Set the tricksWon for each team to 0;
 			//Start playing cards/ doing tricks
 			for (int i=0;i<10;i++){
 				ArrayList<Card> trickCards=new ArrayList<Card>();
 				for (int j=0; j<4;j++){
-					int currentPlayer=(currentBidPlayer+j)%4; //Player that nee-ds to play a card
+					int currentPlayer=(leadPlayer+j)%4; //Player that needs to play a card
 					trickCards.add(Player.getCard(prevBids,hands[currentPlayer],trickCards));
 				}
-				int winner=findVictor(trickCards);
-				
-				//SET NEW FIRST PLAYER
+				int winner=trickWinner.findVictor(trickCards,prevBids.get(prevBids.size())); //TODO
+				leadPlayer=(leadPlayer+winner)%4; //Figure out who leads the next trick
+				//victor.team.tricksWon++;
+				//TODO sort out the tricks here
 			}
+			//TODO sort out the tricks here
+			//AllocatePoints(players[currentBidPlayer].team);
 		}
+	}
+
+	private static void dispHands(Hand[] hands) {
+		
 	}
 
 	private static Hand[] generateHands() {
 		ArrayList<Card> deck=new ArrayList<Card>();
 		for (int suit =0;suit<4;suit++){
 			for(int value=1;value<12;value++){
-				if (!(suit>=3&&value==11)){ //NOTE: CHANGE SUIT TO >=2. NO JOKER CURRENTLY
-					deck.add(new Card(suit,value));
-				}
+				if (!(suit>=3&&value==11)){ //NOTE: CHANGE SUIT TO >=2. NO JOKER CURRENTLY //TODO
+					deck.add(new Card(suit,value));				}
 			}
 		}
 		//Shuffle the deck
@@ -55,21 +66,19 @@ public class Game {
 		//Add cards to each hand
 		Hand[] hands=new Hand[5];
 		for (int i=0;i<4;i++){
+			hands[i]=new Hand();
 			for (int j=0;j<10;j++){
-				hands[i].cards.add(deck.get(i*10+j));
+				Card newCard = deck.get(i*10+j);
+				hands[i].cards.add(newCard);
 			}
 		}
+		hands[4]=new Hand();
 		//Add the kitty
 		hands[4].cards.add(deck.get(40));
 		hands[4].cards.add(deck.get(41));
 		hands[4].cards.add(deck.get(42));
 		
 		return hands;
-	}
-
-	private static int findVictor(ArrayList<Card> trickCards) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	private static boolean gameNotOver(int[] points) {
