@@ -18,7 +18,6 @@ public class trickWinner {
 	}
 	
 	
-	
 	//test if any trumps were played in the trick
 	//assume 4 cards in a trick
 	public static boolean trumpsPlayed(ArrayList<Card> trickCards, Bid bid) {

@@ -1,7 +1,18 @@
 
 public class Team {
-	Player p1;
-	Player p2;
+	DumbPlayer p1;
+	DumbPlayer p2;
 	int points;
 	int tricksWon;
+	
+	public Team(PlayerInt players, PlayerInt players2) {
+		points = 0;
+		tricksWon = 0;
+	}
+	
+	public void addTrick(){tricksWon += 1; }
+	
+	public void resetTricks(){
+		tricksWon=0;
+	}
 }
